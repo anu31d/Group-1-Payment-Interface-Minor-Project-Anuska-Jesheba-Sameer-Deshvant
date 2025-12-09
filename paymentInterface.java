@@ -2,70 +2,63 @@ import java.util.Scanner;
 
 interface PaymentMethod 
 {
-    void makePayment(double paymentAmount);
+    void makePayment();
 }
 
-abstract class BasePayment implements PaymentMethod 
+class UpiPayment implements PaymentMethod 
 {
-    protected double paymentAmount;
-
-    public BasePayment(double paymentAmount) 
-    {
-        this.paymentAmount = paymentAmount;
-    }
-}
-
-class UpiPayment extends BasePayment 
-{
+    private double amount;
     private String upiId;
 
-    public UpiPayment(double paymentAmount, String upiId) 
+    public UpiPayment(double amount, String upiId) 
     {
-        super(paymentAmount);
+        this.amount = amount;
         this.upiId = upiId;
     }
 
-    public void makePayment(double paymentAmount) 
+    public void makePayment() 
     {
-        System.out.println("Processing UPI payment of " + paymentAmount + " using UPI ID: " + upiId);
-        System.out.println("UPI Payment Successful");
+        System.out.println("UPI Payment of " + amount + " using UPI ID: " + upiId);
+        System.out.println("Payment Successful!");
     }
 }
 
-class CardPayment extends BasePayment 
+class CardPayment implements PaymentMethod 
 {
+    private double amount;
     private String cardNumber;
-    private String cardHolderName;
+    private String cardHolder;
 
-    public CardPayment(double paymentAmount, String cardNumber, String cardHolderName) 
+    public CardPayment(double amount, String cardNumber, String cardHolder) 
     {
-        super(paymentAmount);
+        this.amount = amount;
         this.cardNumber = cardNumber;
-        this.cardHolderName = cardHolderName;
+        this.cardHolder = cardHolder;
     }
 
-    public void makePayment(double paymentAmount) 
+    public void makePayment() 
     {
-        System.out.println("Processing Card payment of " + paymentAmount + " using card: " + cardNumber);
-        System.out.println("Card Holder: " + cardHolderName);
-        System.out.println("Card Payment Successful");
+        System.out.println("Card Payment of " + amount + " using Card Number: " + cardNumber);
+        System.out.println("Card Holder Name: " + cardHolder);
+        System.out.println("Payment Successful!");
     }
 }
 
-class WalletPayment extends BasePayment 
+class WalletPayment implements PaymentMethod 
 {
-    private String walletProvider;
+    private double amount;
+    private String provider;
 
-    public WalletPayment(double paymentAmount, String walletProvider) 
+    public WalletPayment(double amount, String provider) 
     {
-        super(paymentAmount);
-        this.walletProvider = walletProvider;
+        this.amount = amount;
+        this.provider = provider;
     }
 
-    public void makePayment(double paymentAmount) 
+    public void makePayment() 
     {
-        System.out.println("Processing Wallet payment of " + paymentAmount + " via " + walletProvider + " Wallet");
-        System.out.println("Wallet Payment Successful");
+        System.out.println("Wallet Payment of " + amount + " via " + provider + " Wallet");
+        System.out.println("Payment Successful!");
     }
 }
 
@@ -73,50 +66,53 @@ public class paymentInterface
 {
     public static void main(String[] args) 
     {
-        Scanner scannerInput = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
 
-        System.out.println("Enter Payment Amount:");
-        double paymentAmount = scannerInput.nextDouble();
-        scannerInput.nextLine();
+        System.out.print("Enter Payment Amount: ");
+        double amount = sc.nextDouble();
+        sc.nextLine(); // Clear buffer
 
-        System.out.println("Select Payment Method:");
+        System.out.println("\nSelect Payment Method:");
         System.out.println("1. UPI");
         System.out.println("2. Card");
         System.out.println("3. Wallet");
+        System.out.print("Choice: ");
 
-        int selectedOption = scannerInput.nextInt();
-        scannerInput.nextLine();
+        int choice = sc.nextInt();
+        sc.nextLine();
 
-        PaymentMethod paymentMethod;
+        PaymentMethod method;
 
-        if (selectedOption == 1) 
+        if (choice == 1) 
         {
-            System.out.println("Enter UPI ID:");
-            String userUpiId = scannerInput.nextLine();
-            paymentMethod = new UpiPayment(paymentAmount, userUpiId);
-        } 
-        else if (selectedOption == 2) 
+            System.out.print("Enter UPI ID: ");
+            String upi = sc.nextLine();
+            method = new UpiPayment(amount, upi);
+        }
+        else if (choice == 2) 
         {
-            System.out.println("Enter Card Number:");
-            String userCardNumber = scannerInput.nextLine();
-
-            System.out.println("Enter Card Holder Name:");
-            String userCardHolderName = scannerInput.nextLine();
-
-            paymentMethod = new CardPayment(paymentAmount, userCardNumber, userCardHolderName);
-        } 
-        else if (selectedOption == 3) 
+            System.out.print("Enter Card Number: ");
+            String cardNo = sc.nextLine();
+            System.out.print("Enter Card Holder Name: ");
+            String name = sc.nextLine();
+            method = new CardPayment(amount, cardNo, name);
+        }
+        else if (choice == 3) 
         {
-            System.out.println("Enter Wallet Provider (Paytm/PhonePe/AmazonPay):");
-            String walletProvider = scannerInput.nextLine();
-            paymentMethod = new WalletPayment(paymentAmount, walletProvider);
-        } 
+            System.out.print("Enter Wallet Provider: ");
+            String provider = sc.nextLine();
+            method = new WalletPayment(amount, provider);
+        }
         else 
         {
-            System.out.println("Invalid Option");
+            System.out.println("Invalid Option!");
+            sc.close();
             return;
         }
 
-        paymentMethod.makePayment(paymentAmount);
+        System.out.println("\n--- Processing Payment ---");
+        method.makePayment();
+
+        sc.close();
     }
 }
