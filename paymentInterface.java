@@ -70,14 +70,12 @@ public class paymentInterface
 
         System.out.print("Enter Payment Amount: ");
         double amount = sc.nextDouble();
-        sc.nextLine(); // Clear buffer
-
+        sc.nextLine(); 
         System.out.println("\nSelect Payment Method:");
         System.out.println("1. UPI");
         System.out.println("2. Card");
         System.out.println("3. Wallet");
         System.out.print("Choice: ");
-
         int choice = sc.nextInt();
         sc.nextLine();
 
@@ -112,7 +110,7 @@ public class paymentInterface
 
         System.out.println("\n--- Processing Payment ---");
         method.makePayment();
-
+        
         sc.close();
     }
 }
